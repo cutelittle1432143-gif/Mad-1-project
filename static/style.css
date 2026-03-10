@@ -1,0 +1,50 @@
+body {
+    padding-bottom: 2rem;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: #e9ecef;
+    min-height: calc(100vh - 120px);
+    padding: 20px 10px;
+    border-right: 1px solid #ccc;
+}
+
+.sidebar h6 {
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: #333;
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #dee2e6;
+    border-radius: 4px;
+}
+
+.main-content {
+    padding: 20px 30px;
+}
+
+.table {
+    font-size: 0.9rem;
+}
+
+footer {
+    background-color: #e9ecef;
+    border-top: 1px solid #ccc;
+    color: #555;
+}
+
+.card-header strong {
+    font-size: 0.95rem;
+}
+
+.navbar-brand {
+    font-size: 1.1rem;
+}

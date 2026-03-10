@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Placementshala - Campus Placement Platform{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-md-8 mx-auto">
+
+        <h1>Welcome to Placementshala</h1>
+        <p class="lead">A simple campus placement management system built for students, recruiters, and the placement
+            cell.</p>
+        <hr>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5>For Students</h5>
+                        <ul>
+                            <li>Browse approved placement drives</li>
+                            <li>Apply to drives with one click</li>
+                            <li>Track application status</li>
+                            <li>Filter drives by eligibility</li>
+                            <li>Update your profile and CGPA</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5>For Recruiters</h5>
+                        <ul>
+                            <li>Register your company</li>
+                            <li>Post placement drives</li>
+                            <li>View applicant list per drive</li>
+                            <li>Shortlist, select, or reject candidates</li>
+                            <li>Edit or remove drives</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5>Placement Cell (Admin)</h5>
+                        <ul>
+                            <li>Approve or reject companies</li>
+                            <li>Approve or reject drives</li>
+                            <li>View all students and companies</li>
+                            <li>Blacklist or activate users</li>
+                            <li>Search and filter data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>How It Works</h5>
+                <ol>
+                    <li><strong>Companies register</strong> and wait for admin approval</li>
+                    <li><strong>Admin approves</strong> the company from the Placement Cell Panel</li>
+                    <li><strong>Company posts a drive</strong> (job listing) — this also needs admin approval</li>
+                    <li><strong>Admin approves the drive</strong> — it becomes visible to students</li>
+                    <li><strong>Students browse and apply</strong> to approved drives</li>
+                    <li><strong>Company reviews applicants</strong> and updates status (shortlisted / selected /
+                        rejected)</li>
+                    <li><strong>Students track</strong> their application status from their dashboard</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>What Placementshala Does NOT Cover</h5>
+                <ul>
+                    <li>Resume file uploads (only text/link supported)</li>
+                    <li>Email notifications</li>
+                    <li>Interview scheduling</li>
+                    <li>Salary or package details</li>
+                    <li>Multi-round selection tracking</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mb-4">
+            <a href="{{ url_for('login') }}" class="btn btn-dark btn-lg me-2">Login</a>
+            <a href="{{ url_for('register_student') }}" class="btn btn-outline-dark btn-lg me-2">Register as Student</a>
+            <a href="{{ url_for('register_company') }}" class="btn btn-outline-dark btn-lg">Register as Company</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

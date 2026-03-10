@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Drive Details - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<h2>Drive: {{ drive.job_title }}</h2>
+<hr>
+
+<table class="table table-bordered" style="max-width: 500px;">
+    <tr>
+        <th>Company</th>
+        <td>{{ drive.recruiter.company_name }}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{ drive.job_description or '-' }}</td>
+    </tr>
+    <tr>
+        <th>Eligibility</th>
+        <td>{{ drive.eligibility or '-' }}</td>
+    </tr>
+    <tr>
+        <th>Deadline</th>
+        <td>{{ drive.deadline or '-' }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td>{{ drive.status }}</td>
+    </tr>
+    <tr>
+        <th>Total Applicants</th>
+        <td><strong>{{ applications|length }}</strong></td>
+    </tr>
+</table>
+
+{% if applications %}
+<h4 class="mt-4">Applicant List</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>CGPA</th>
+            <th>Applied On</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in applications %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ a.student.name }}</td>
+            <td>{{ a.student.email }}</td>
+            <td>{{ a.student.cgpa }}</td>
+            <td>{{ a.application_date.strftime('%Y-%m-%d') }}</td>
+            <td><span
+                    class="badge {% if a.status == 'selected' %}bg-success{% elif a.status == 'rejected' %}bg-danger{% elif a.status == 'shortlisted' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{
+                    a.status }}</span></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No applications yet for this drive.</p>
+{% endif %}
+
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-dark mt-2">Back to Panel</a>
+{% endblock %}

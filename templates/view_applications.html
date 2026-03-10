@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Applicants for {{ drive.job_title }} - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<h2>Applicants - {{ drive.job_title }}</h2>
+<p>Status: {{ drive.status }} | Deadline: {{ drive.deadline or '-' }} | Total: {{ applications|length }}</p>
+<hr>
+
+{% if applications %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Email</th>
+            <th>CGPA</th>
+            <th>Applied On</th>
+            <th>Status</th>
+            <th>Update</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in applications %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ a.student.name }}</td>
+            <td>{{ a.student.email }}</td>
+            <td>{{ a.student.cgpa }}</td>
+            <td>{{ a.application_date.strftime('%Y-%m-%d') }}</td>
+            <td><span
+                    class="badge {% if a.status == 'selected' %}bg-success{% elif a.status == 'rejected' %}bg-danger{% elif a.status == 'shortlisted' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{
+                    a.status }}</span></td>
+            <td>
+                <form method="POST" action="{{ url_for('update_app_status', app_id=a.id) }}" class="d-flex gap-1">
+                    <select name="status" class="form-select form-select-sm" style="width:auto;">
+                        <option value="applied" {% if a.status=='applied' %}selected{% endif %}>Applied</option>
+                        <option value="shortlisted" {% if a.status=='shortlisted' %}selected{% endif %}>Shortlisted
+                        </option>
+                        <option value="selected" {% if a.status=='selected' %}selected{% endif %}>Selected</option>
+                        <option value="rejected" {% if a.status=='rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-outline-dark">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No one has applied yet.</p>
+{% endif %}
+
+<a href="{{ url_for('company_dashboard') }}" class="btn btn-outline-dark mt-2">Back to Recruiter Panel</a>
+{% endblock %}

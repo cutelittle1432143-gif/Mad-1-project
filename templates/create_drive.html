@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{% if edit %}Edit Drive{% else %}Create Drive{% endif %} - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-7 mx-auto mt-3">
+        <h3>{% if edit %}Edit Drive{% else %}Post New Drive{% endif %}</h3>
+        <hr>
+        <form method="POST"
+            action="{% if edit %}{{ url_for('edit_drive', did=drive.id) }}{% else %}{{ url_for('create_drive') }}{% endif %}">
+
+            <div class="mb-3">
+                <label for="job_title" class="form-label">Job Title</label>
+                <input type="text" class="form-control" id="job_title" name="job_title" required
+                    value="{{ drive.job_title if edit else '' }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="job_description" class="form-label">Job Description</label>
+                <textarea class="form-control" id="job_description" name="job_description"
+                    rows="4">{{ drive.job_description if edit else '' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="eligibility" class="form-label">Eligibility</label>
+                <input type="text" class="form-control" id="eligibility" name="eligibility"
+                    value="{{ drive.eligibility if edit else '' }}" placeholder="e.g. CGPA >= 7.0">
+            </div>
+
+            <div class="mb-3">
+                <label for="deadline" class="form-label">Deadline</label>
+                <input type="date" class="form-control" id="deadline" name="deadline"
+                    value="{{ drive.deadline if edit and drive.deadline else '' }}">
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100">{% if edit %}Save Changes{% else %}Submit Drive{% endif
+                %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

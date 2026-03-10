@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Login - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mx-auto mt-3">
+        <h3>Login</h3>
+        <hr>
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required
+                    placeholder="student_demo@college.edu">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Log In</button>
+        </form>
+        <hr>
+        <p><a href="{{ url_for('register_student') }}">New Student? Register here</a></p>
+        <p><a href="{{ url_for('register_company') }}">Company? Register here</a></p>
+    </div>
+</div>
+{% endblock %}

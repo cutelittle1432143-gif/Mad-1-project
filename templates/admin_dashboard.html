@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+{% block title %}Placement Cell Panel - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<h2>Placement Cell Panel</h2>
+<hr>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card text-bg-dark mb-2">
+            <div class="card-body text-center">
+                <h6>Students</h6>
+                <h3>{{ num_students }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-secondary mb-2">
+            <div class="card-body text-center">
+                <h6>Companies</h6>
+                <h3>{{ num_companies }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-secondary mb-2">
+            <div class="card-body text-center">
+                <h6>Drives</h6>
+                <h3>{{ num_drives }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-dark mb-2">
+            <div class="card-body text-center">
+                <h6>Applications</h6>
+                <h3>{{ num_applications }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Search</h5>
+        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="row g-2">
+            <div class="col-md-5">
+                <input type="text" class="form-control" name="q" placeholder="Name or ID" value="{{ search_q }}">
+            </div>
+            <div class="col-md-4">
+                <select name="type" class="form-select">
+                    <option value="student" {% if search_type=='student' %}selected{% endif %}>Student</option>
+                    <option value="company" {% if search_type=='company' %}selected{% endif %}>Company</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-dark w-100">Search</button>
+            </div>
+        </form>
+
+        {% if search_results %}
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>{% if search_type == 'student' %}<th>CGPA</th>{% endif %}{% if search_type == 'company'
+                    %}<th>Status</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in search_results %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name if search_type == 'student' else item.company_name }}</td>
+                    {% if search_type == 'student' %}<td>{{ item.cgpa }}</td>{% endif %}
+                    {% if search_type == 'company' %}<td>{{ item.approval_status }}</td>{% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif search_q %}
+        <p class="mt-2 text-muted">No results.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Filter Drives by Eligibility</h5>
+        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="row g-2">
+            <div class="col-md-8">
+                <input type="text" class="form-control" name="eligibility" placeholder="e.g. CGPA >= 7"
+                    value="{{ eligibility_filter }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-outline-dark w-100">Filter</button>
+            </div>
+        </form>
+        {% if filtered_drives %}
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Eligibility</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in filtered_drives %}
+                <tr>
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.job_title }}</td>
+                    <td>{{ d.eligibility }}</td>
+                    <td>{{ d.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% elif eligibility_filter %}
+        <p class="mt-2 text-muted">No drives match.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% if pending_companies %}
+<div class="card mb-3">
+    <div class="card-header bg-warning text-dark"><strong>Pending Company Approvals</strong></div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>HR Contact</th>
+                    <th>Website</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in pending_companies %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.company_name }}</td>
+                    <td>{{ c.hr_contact }}</td>
+                    <td>{{ c.website }}</td>
+                    <td>
+                        <a href="{{ url_for('approve_company', cid=c.id) }}" class="btn btn-sm btn-success">Approve</a>
+                        <a href="{{ url_for('reject_company', cid=c.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if pending_drives %}
+<div class="card mb-3">
+    <div class="card-header bg-warning text-dark"><strong>Pending Drive Approvals</strong></div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Deadline</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in pending_drives %}
+                <tr>
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.job_title }}</td>
+                    <td>{{ d.recruiter.company_name }}</td>
+                    <td>{{ d.deadline or '-' }}</td>
+                    <td>
+                        <a href="{{ url_for('approve_drive', did=d.id) }}" class="btn btn-sm btn-success">Approve</a>
+                        <a href="{{ url_for('reject_drive', did=d.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if approved_drives %}
+<div class="card mb-3">
+    <div class="card-header bg-success text-white"><strong>Approved Drives (Live)</strong></div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Eligibility</th>
+                    <th>Deadline</th>
+                    <th>Applicants</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in approved_drives %}
+                <tr>
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.job_title }}</td>
+                    <td>{{ d.recruiter.company_name }}</td>
+                    <td>{{ d.eligibility or '-' }}</td>
+                    <td>{{ d.deadline or '-' }}</td>
+                    <td><span class="badge bg-dark">{{ d.applications|length }}</span></td>
+                    <td><a href="{{ url_for('admin_drive_details', did=d.id) }}"
+                            class="btn btn-sm btn-outline-dark">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if all_students %}
+<div class="card mb-3">
+    <div class="card-header"><strong>All Students</strong></div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>CGPA</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in all_students %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.cgpa }}</td>
+                    <td><span class="badge {{ 'bg-success' if s.user.status == 'active' else 'bg-danger' }}">{{
+                            s.user.status }}</span></td>
+                    <td>
+                        {% if s.user.status == 'active' %}
+                        <a href="{{ url_for('blacklist_user', uid=s.user.id) }}"
+                            class="btn btn-sm btn-outline-danger">Blacklist</a>
+                        {% else %}
+                        <a href="{{ url_for('activate_user', uid=s.user.id) }}"
+                            class="btn btn-sm btn-outline-success">Activate</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if all_companies %}
+<div class="card mb-3">
+    <div class="card-header"><strong>All Companies</strong></div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Company</th>
+                    <th>HR Contact</th>
+                    <th>Approval</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in all_companies %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.company_name }}</td>
+                    <td>{{ c.hr_contact }}</td>
+                    <td><span
+                            class="badge {% if c.approval_status == 'approved' %}bg-success{% elif c.approval_status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">{{
+                            c.approval_status }}</span></td>
+                    <td><span class="badge {{ 'bg-success' if c.user.status == 'active' else 'bg-danger' }}">{{
+                            c.user.status }}</span></td>
+                    <td>
+                        {% if c.user.status == 'active' %}
+                        <a href="{{ url_for('blacklist_user', uid=c.user.id) }}"
+                            class="btn btn-sm btn-outline-danger">Blacklist</a>
+                        {% else %}
+                        <a href="{{ url_for('activate_user', uid=c.user.id) }}"
+                            class="btn btn-sm btn-outline-success">Activate</a>
+                        {% endif %}
+                        {% if c.approval_status == 'pending' %}
+                        <a href="{{ url_for('approve_company', cid=c.id) }}" class="btn btn-sm btn-success">Approve</a>
+                        <a href="{{ url_for('reject_company', cid=c.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

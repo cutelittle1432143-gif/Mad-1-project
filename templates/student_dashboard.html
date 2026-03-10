@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Student Portal - Campus Recruitment Manager{% endblock %}
+
+{% block content %}
+<h2>Student Portal</h2>
+<p>Welcome, {{ profile.name }} | CGPA: {{ profile.cgpa }} | {{ profile.email }}</p>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Available Drives</strong></div>
+    <div class="card-body">
+        {% if available_drives %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Eligibility</th>
+                    <th>Deadline</th>
+                    <th>Applicants</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in available_drives %}
+                <tr>
+                    <td>{{ d.job_title }}</td>
+                    <td>{{ d.recruiter.company_name }}</td>
+                    <td>{{ d.eligibility or '-' }}</td>
+                    <td>{{ d.deadline or '-' }}</td>
+                    <td>{{ d.applications|length }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('apply_for_drive', did=d.id) }}">
+                            <button type="submit" class="btn btn-sm btn-dark">Apply</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">No drives available right now.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header"><strong>Recent Applications</strong></div>
+    <div class="card-body">
+        {% if my_recent_apps %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Applied On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in my_recent_apps %}
+                <tr>
+                    <td>{{ a.drive.job_title }}</td>
+                    <td>{{ a.drive.recruiter.company_name }}</td>
+                    <td>{{ a.application_date.strftime('%Y-%m-%d') }}</td>
+                    <td><span
+                            class="badge {% if a.status == 'selected' %}bg-success{% elif a.status == 'rejected' %}bg-danger{% elif a.status == 'shortlisted' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{
+                            a.status }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('student_applications') }}" class="btn btn-outline-dark btn-sm">See All Applications</a>
+        {% else %}
+        <p class="text-muted">No applications yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
